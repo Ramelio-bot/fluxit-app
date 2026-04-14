@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0f172a;
-  --color-foreground: #f8fafc;
+  --color-background: #FFFFFF;
+  --color-foreground: #1E293B;
   
-  --color-brand-primary: #38bdf8;
-  --color-brand-secondary: #818cf8;
-  --color-brand-accent: #2dd4bf;
+  --color-brand-primary: #D4AF37; /* Champagne Gold */
+  --color-brand-secondary: #94A3B8; /* Muted Slate / Silver */
+  --color-brand-accent: #1E293B;
   
-  --color-card-bg: rgba(30, 41, 59, 0.5);
-  --color-card-border: rgba(51, 65, 85, 0.5);
+  --color-card-bg: #FFFFFF;
+  --color-card-border: #F1F5F9;
   
   --font-sans: var(--font-geist-sans), Inter, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 :root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
+  --background: #FFFFFF;
+  --foreground: #1E293B;
 }
 
 * {
@@ -41,29 +41,9 @@ body {
 }
 
 @layer utilities {
-  .glass {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  }
-  
-  .glass-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .glass-hover:hover {
-    background: rgba(30, 41, 59, 0.6);
-    border-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
-  }
-
-  .text-gradient {
-    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .luxury-card {
+    background: #FFFFFF;
+    border: 1px solid #F1F5F9;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
   }
 }

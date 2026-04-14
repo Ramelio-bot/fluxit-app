@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/Card";
-import { Scale, Ruler, Thermometer } from "lucide-react";
+import { Ruler } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Category = "length" | "mass" | "temp";
@@ -75,23 +75,23 @@ export const UnitConverter = () => {
   return (
     <Card className="h-full flex flex-col justify-between">
       <div>
-        <div className="flex items-center gap-2 mb-6">
-          <div className="p-2 rounded-xl bg-brand-primary/10 text-brand-primary">
-            <Ruler size={20} />
+        <div className="flex items-center gap-3 mb-8">
+          <div className="text-brand-primary">
+            <Ruler size={24} strokeWidth={1.5} />
           </div>
-          <h3 className="text-xl font-semibold">Unit Converter</h3>
+          <h3 className="text-2xl font-medium text-slate-800">Unit Converter</h3>
         </div>
 
-        <div className="flex gap-2 mb-6 bg-slate-900/50 p-1 rounded-2xl border border-white/5">
+        <div className="flex gap-2 mb-8 p-1 bg-slate-50 rounded-xl border border-slate-100">
           {(["length", "mass", "temp"] as Category[]).map((cat) => (
             <button
               key={cat}
               onClick={() => handleCategoryChange(cat)}
               className={cn(
-                "flex-1 py-2 px-3 rounded-xl transition-all text-sm capitalize",
+                "flex-1 py-2 px-3 rounded-lg transition-all text-sm capitalize font-medium",
                 category === cat
-                  ? "bg-brand-primary text-white shadow-lg"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-white text-slate-800 shadow-sm border border-slate-200"
+                  : "text-slate-500 hover:text-slate-800"
               )}
             >
               {cat}
@@ -99,25 +99,24 @@ export const UnitConverter = () => {
           ))}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <label className="text-xs text-slate-500 mb-1 block">Value</label>
+            <label className="text-xs uppercase tracking-widest text-slate-400 mb-2 block font-medium">Value</label>
             <input
               type="number"
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary transition-colors"
-              placeholder="Enter value"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-800 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all text-lg"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-slate-500 mb-1 block">From</label>
+              <label className="text-xs uppercase tracking-widest text-slate-400 mb-2 block font-medium">From</label>
               <select
                 value={fromUnit}
                 onChange={(e) => setFromUnit(e.target.value)}
-                className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-brand-primary"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-800 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all appearance-none"
               >
                 {category === "temp"
                   ? ["C", "F", "K"].map((u) => <option key={u}>{u}</option>)
@@ -127,11 +126,11 @@ export const UnitConverter = () => {
               </select>
             </div>
             <div>
-              <label className="text-xs text-slate-500 mb-1 block">To</label>
+              <label className="text-xs uppercase tracking-widest text-slate-400 mb-2 block font-medium">To</label>
               <select
                 value={toUnit}
                 onChange={(e) => setToUnit(e.target.value)}
-                className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-brand-primary"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-800 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all appearance-none"
               >
                 {category === "temp"
                   ? ["C", "F", "K"].map((u) => <option key={u}>{u}</option>)
@@ -144,11 +143,11 @@ export const UnitConverter = () => {
         </div>
       </div>
 
-      <div className="mt-8 pt-6 border-t border-white/5">
-        <p className="text-xs text-slate-500 mb-1">Result</p>
-        <div className="text-3xl font-mono font-bold text-brand-primary truncate">
+      <div className="mt-10 pt-8 border-t border-slate-100">
+        <p className="text-xs uppercase tracking-widest text-slate-400 mb-2 font-medium">Result</p>
+        <div className="text-4xl font-mono text-slate-800 truncate">
           {result.toLocaleString(undefined, { maximumFractionDigits: 4 })}{" "}
-          <span className="text-base text-slate-400 font-sans">{toUnit}</span>
+          <span className="text-xl text-slate-400 font-sans">{toUnit}</span>
         </div>
       </div>
     </Card>

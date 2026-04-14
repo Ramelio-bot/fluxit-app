@@ -29,33 +29,33 @@ export const DataSpeedConverter = () => {
   }, [value, fromUnit, toUnit]);
 
   return (
-    <Card className="h-full flex flex-col justify-between border-brand-accent/20">
+    <Card className="h-full flex flex-col justify-between">
       <div>
-        <div className="flex items-center gap-2 mb-6">
-          <div className="p-2 rounded-xl bg-brand-accent/10 text-brand-accent">
-            <Zap size={20} />
+        <div className="flex items-center gap-3 mb-8">
+          <div className="text-brand-primary">
+            <Zap size={24} strokeWidth={1.5} />
           </div>
-          <h3 className="text-xl font-semibold">Data Speed</h3>
+          <h3 className="text-2xl font-medium text-slate-800">Digital Lab</h3>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <label className="text-xs text-slate-500 mb-1 block">Speed Value</label>
+            <label className="text-xs uppercase tracking-widest text-slate-400 mb-2 block font-medium">Speed Value</label>
             <input
               type="number"
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-accent transition-colors font-mono"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-800 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all font-mono text-lg"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-slate-500 mb-1 block">From</label>
+              <label className="text-xs uppercase tracking-widest text-slate-400 mb-2 block font-medium">From</label>
               <select
                 value={fromUnit}
                 onChange={(e) => setFromUnit(e.target.value as keyof typeof DATA_UNITS)}
-                className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-brand-accent"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-800 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all appearance-none"
               >
                 {Object.keys(DATA_UNITS).map((u) => (
                   <option key={u} value={u}>{u}</option>
@@ -63,11 +63,11 @@ export const DataSpeedConverter = () => {
               </select>
             </div>
             <div>
-              <label className="text-xs text-slate-500 mb-1 block">To</label>
+              <label className="text-xs uppercase tracking-widest text-slate-400 mb-2 block font-medium">To</label>
               <select
                 value={toUnit}
                 onChange={(e) => setToUnit(e.target.value as keyof typeof DATA_UNITS)}
-                className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-brand-accent"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-800 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all appearance-none"
               >
                 {Object.keys(DATA_UNITS).map((u) => (
                   <option key={u} value={u}>{u}</option>
@@ -78,11 +78,11 @@ export const DataSpeedConverter = () => {
         </div>
       </div>
 
-      <div className="mt-8 bg-brand-accent/5 p-6 rounded-2xl border border-brand-accent/10 text-center">
-        <div className="text-4xl font-mono font-bold text-brand-accent mb-1 truncate">
+      <div className="mt-10 bg-slate-50 p-8 rounded-2xl border border-slate-100 text-center">
+        <div className="text-5xl font-mono text-slate-800 mb-2 truncate">
           {result.toLocaleString(undefined, { maximumFractionDigits: 3 })}
         </div>
-        <div className="text-sm text-slate-500 uppercase tracking-widest">{toUnit}</div>
+        <div className="text-sm font-medium text-brand-primary uppercase tracking-widest">{toUnit}</div>
       </div>
     </Card>
   );

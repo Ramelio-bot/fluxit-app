@@ -13,15 +13,14 @@ interface CardProps {
 export const Card = ({ children, className, delay = 0 }: CardProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
+      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "glass glass-hover p-6 rounded-3xl overflow-hidden relative group",
+        "bg-white p-10 rounded-3xl overflow-hidden relative group border border-slate-100 shadow-sm transition-shadow duration-300 hover:shadow-md",
         className
       )}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       <div className="relative z-10">{children}</div>
     </motion.div>
   );
