@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Ruler } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -28,35 +28,28 @@ export const UnitConverter = () => {
   const [value, setValue] = useState<string>("1");
   const [fromUnit, setFromUnit] = useState<string>("m");
   const [toUnit, setToUnit] = useState<string>("km");
-  const [result, setResult] = useState<number>(0);
 
-  useEffect(() => {
-    convert();
-  }, [value, fromUnit, toUnit, category]);
-
-  const convert = () => {
-    const val = parseFloat(value);
-    if (isNaN(val)) {
-      setResult(0);
-      return;
-    }
-
+  // Calculate during render - cleaner and better for linting/performance
+  const val = parseFloat(value);
+  let result = 0;
+  
+  if (!isNaN(val)) {
     if (category === "temp") {
       let celsius = val;
       if (fromUnit === "F") celsius = (val - 32) * (5 / 9);
       if (fromUnit === "K") celsius = val - 273.15;
 
-      let res = celsius;
-      if (toUnit === "F") res = celsius * (9 / 5) + 32;
-      if (toUnit === "K") res = celsius + 273.15;
-      setResult(res);
+      result = celsius;
+      if (toUnit === "F") result = celsius * (9 / 5) + 32;
+      if (toUnit === "K") result = celsius + 273.15;
     } else {
-      const units = UNITS[category];
-      const baseValue = val * units[fromUnit as keyof typeof units];
-      const res = baseValue / units[toUnit as keyof typeof units];
-      setResult(res);
+      const units = UNITS[category as "length" | "mass"];
+      if (units) {
+        const baseValue = val * (units as Record<string, number>)[fromUnit];
+        result = baseValue / (units as Record<string, number>)[toUnit];
+      }
     }
-  };
+  }
 
   const handleCategoryChange = (cat: Category) => {
     setCategory(cat);

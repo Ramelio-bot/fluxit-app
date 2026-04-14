@@ -9,6 +9,10 @@ import { AdSensePlaceholder } from "@/components/ads/AdSensePlaceholder";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileItem, FileStatus, WorkerMessage } from "@/lib/types";
 
+import { UnitConverter } from "@/components/tools/UnitConverter";
+import { ProfitMarginCalculator } from "@/components/tools/ProfitMarginCalculator";
+import { DataSpeedConverter } from "@/components/tools/DataSpeedConverter";
+
 export default function ConverterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const title = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -25,15 +29,18 @@ export default function ConverterPage({ params }: { params: Promise<{ slug: stri
   const totalProgress = files.reduce((acc, f) => acc + f.progress, 0);
   const masterProgress = files.length > 0 ? (totalProgress / files.length) : 0;
 
+  // Identify which mode we are in
+  const isTool = ["unit-converter", "profit-margin-calculator", "data-speed-converter"].includes(slug);
+
   useEffect(() => {
     // Check if all files are complete
-    if (files.length > 0 && files.every(f => f.status === "success" || f.status === "error")) {
+    if (!isTool && files.length > 0 && files.every(f => f.status === "success" || f.status === "error")) {
       if (isConverting) {
         setIsConverting(false);
         setConversionComplete(true);
       }
     }
-  }, [files, isConverting]);
+  }, [files, isConverting, isTool]);
 
   // Clean up workers on unmount
   useEffect(() => {
@@ -69,11 +76,7 @@ export default function ConverterPage({ params }: { params: Promise<{ slug: stri
       status: "converting" as FileStatus
     })));
 
-    // Maximum concurrent workers based on hardware concurrency or default 4
-    const maxWorkers = typeof navigator !== 'undefined' ? (navigator.hardwareConcurrency || 4) : 4;
-    
-    // We simulate by assigning a worker to each file, relying on browser's internal pooling, 
-    // or we explicitly pool. For the mock, we can just spin up a worker per file since it's just setTimeouts.
+    // Maximum concurrent workers
     files.forEach(f => {
       const worker = new Worker(new URL('../../workers/converter.worker.ts', import.meta.url));
       workersRef.current.push(worker);
@@ -110,6 +113,15 @@ export default function ConverterPage({ params }: { params: Promise<{ slug: stri
     setIsConverting(false);
   };
 
+  const renderTool = () => {
+    switch(slug) {
+      case "unit-converter": return <UnitConverter />;
+      case "profit-margin-calculator": return <ProfitMarginCalculator />;
+      case "data-speed-converter": return <DataSpeedConverter />;
+      default: return null;
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-12 relative flex-1 flex flex-col">
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
@@ -118,69 +130,81 @@ export default function ConverterPage({ params }: { params: Promise<{ slug: stri
 
       <div className="text-center mb-12 relative z-10 hidden md:block">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">{title}</h1>
-        <p className="text-slate-400">Secure, lightning-fast batch processing engine.</p>
+        <p className="text-slate-400">
+          {isTool ? "Precision engineering for accurate results." : "Secure, lightning-fast batch processing engine."}
+        </p>
       </div>
 
       <div className="flex-1 flex flex-col xl:flex-row gap-8 relative z-10 w-full mb-20">
         <div className="flex-1 flex flex-col max-w-5xl w-full mx-auto">
-          <AnimatePresence mode="wait">
-            {!conversionComplete ? (
-              <motion.div
-                key="dropzone-flow"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="w-full flex flex-col"
-              >
-                {files.length === 0 ? (
-                  <DropZone 
-                    onFilesSelect={handleFilesSelect} 
-                    disabled={isConverting}
-                  />
-                ) : (
-                  <div className="flex flex-col gap-6 w-full">
-                    <QueueManager files={files} onRemoveFn={removeFile} />
-                    
-                    <div className="flex items-center justify-between mt-4 mb-2 px-2">
-                       <button 
-                         onClick={() => setFiles([])} 
-                         disabled={isConverting}
-                         className="text-sm font-medium text-slate-500 hover:text-white transition-colors disabled:opacity-50"
-                       >
-                         Clear All
-                       </button>
-                       <button
-                         onClick={() => {
-                           const input = document.createElement('input');
-                           input.type = 'file';
-                           input.multiple = true;
-                           input.onchange = (e) => {
-                             const target = e.target as HTMLInputElement;
-                             if (target.files) handleFilesSelect(Array.from(target.files));
-                           };
-                           input.click();
-                         }}
-                         disabled={isConverting}
-                         className="text-sm font-medium text-brand-primary hover:text-white transition-colors disabled:opacity-50"
-                       >
-                         + Add More Files
-                       </button>
-                    </div>
-
-                    <OptionsPanel 
-                      onConvert={triggerBatchConversion} 
-                      isConverting={isConverting} 
-                      masterProgress={masterProgress}
-                      globalFormat={globalFormat}
-                      setGlobalFormat={setGlobalFormat}
+          {isTool ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full max-w-2xl mx-auto"
+            >
+              {renderTool()}
+            </motion.div>
+          ) : (
+            <AnimatePresence mode="wait">
+              {!conversionComplete ? (
+                <motion.div
+                  key="dropzone-flow"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="w-full flex flex-col"
+                >
+                  {files.length === 0 ? (
+                    <DropZone 
+                      onFilesSelect={handleFilesSelect} 
+                      disabled={isConverting}
                     />
-                  </div>
-                )}
-              </motion.div>
-            ) : (
-              <ResultsArea files={files} onReset={resetPipeline} key="results" />
-            )}
-          </AnimatePresence>
+                  ) : (
+                    <div className="flex flex-col gap-6 w-full">
+                      <QueueManager files={files} onRemoveFn={removeFile} />
+                      
+                      <div className="flex items-center justify-between mt-4 mb-2 px-2">
+                        <button 
+                          onClick={() => setFiles([])} 
+                          disabled={isConverting}
+                          className="text-sm font-medium text-slate-500 hover:text-white transition-colors disabled:opacity-50"
+                        >
+                          Clear All
+                        </button>
+                        <button
+                          onClick={() => {
+                            const input = document.createElement('input');
+                            input.type = 'file';
+                            input.multiple = true;
+                            input.onchange = (e) => {
+                              const target = e.target as HTMLInputElement;
+                              if (target.files) handleFilesSelect(Array.from(target.files));
+                            };
+                            input.click();
+                          }}
+                          disabled={isConverting}
+                          className="text-sm font-medium text-brand-primary hover:text-white transition-colors disabled:opacity-50"
+                        >
+                          + Add More Files
+                        </button>
+                      </div>
+
+                      <OptionsPanel 
+                        onConvert={triggerBatchConversion} 
+                        isConverting={isConverting} 
+                        masterProgress={masterProgress}
+                        globalFormat={globalFormat}
+                        setGlobalFormat={setGlobalFormat}
+                      />
+                    </div>
+                  )}
+                </motion.div>
+              ) : (
+                <ResultsArea files={files} onReset={resetPipeline} key="results" />
+              )}
+            </AnimatePresence>
+          )}
         </div>
 
         {/* Sidebar Ads */}

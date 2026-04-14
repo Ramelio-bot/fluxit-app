@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Zap } from "lucide-react";
 
@@ -19,14 +19,10 @@ export const DataSpeedConverter = () => {
   const [value, setValue] = useState<string>("100");
   const [fromUnit, setFromUnit] = useState<keyof typeof DATA_UNITS>("Mbps");
   const [toUnit, setToUnit] = useState<keyof typeof DATA_UNITS>("MB/s");
-  const [result, setResult] = useState<number>(0);
 
-  useEffect(() => {
-    const val = parseFloat(value) || 0;
-    const bits = val * DATA_UNITS[fromUnit];
-    const res = bits / DATA_UNITS[toUnit];
-    setResult(res);
-  }, [value, fromUnit, toUnit]);
+  const val = parseFloat(value) || 0;
+  const bits = val * DATA_UNITS[fromUnit];
+  const result = bits / DATA_UNITS[toUnit];
 
   return (
     <Card className="h-full flex flex-col justify-between">

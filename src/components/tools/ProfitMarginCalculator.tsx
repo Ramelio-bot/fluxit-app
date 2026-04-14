@@ -1,24 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { TrendingUp } from "lucide-react";
 
 export const ProfitMarginCalculator = () => {
   const [revenue, setRevenue] = useState<string>("1000");
   const [cost, setCost] = useState<string>("600");
-  const [profit, setProfit] = useState<number>(0);
-  const [margin, setMargin] = useState<number>(0);
 
-  useEffect(() => {
-    const rev = parseFloat(revenue) || 0;
-    const cst = parseFloat(cost) || 0;
-    const prof = rev - cst;
-    const marg = rev > 0 ? (prof / rev) * 100 : 0;
-
-    setProfit(prof);
-    setMargin(marg);
-  }, [revenue, cost]);
+  const rev = parseFloat(revenue) || 0;
+  const cst = parseFloat(cost) || 0;
+  const profit = rev - cst;
+  const margin = rev > 0 ? (profit / rev) * 100 : 0;
 
   return (
     <Card className="h-full flex flex-col justify-between">
